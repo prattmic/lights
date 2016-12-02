@@ -143,6 +143,7 @@ void setup_spi()
 }
 
 void cylon(color *data, int len, int center);
+void rainbowCycle(color *data, int len, int j);
 
 int main(void)
 {
@@ -185,18 +186,18 @@ int main(void)
 		// Make a cool effect plz!
 		//shiftdecay(led_data, scratch, N_LEDS);
 
-		cylon(led_data, N_LEDS, center);
-		if (up) {
-			center++;
-			if (center >= N_LEDS) {
-				up = 0;
-			}
-		} else {
-			center--;
-			if (center < 0) {
-				up = 1;
-			}
-		}
+		rainbowCycle(led_data, N_LEDS, j);
+		//if (up) {
+		//	center++;
+		//	if (center >= N_LEDS) {
+		//		up = 0;
+		//	}
+		//} else {
+		//	center--;
+		//	if (center < 0) {
+		//		up = 1;
+		//	}
+		//}
 
 		// Send the new data to the LED string
 		update_string(led_data, N_LEDS);
@@ -210,6 +211,38 @@ int main(void)
 
 	return 0;
 
+}
+
+color Wheel(int WheelPos);
+
+void rainbowCycle(color *data, int len, int j) {
+	int i;
+	for(i=0; i< len; i++) {
+		color c=Wheel(((i * 256 / len) + j) & 255);
+		data[i] = c;
+	}
+}
+
+color Wheel(int WheelPos) {
+	static color c;
+
+	if(WheelPos < 85) {
+		c.r=WheelPos * 3;
+		c.g=255 - WheelPos * 3;
+		c.b=0;
+	} else if(WheelPos < 170) {
+		WheelPos -= 85;
+		c.r=255 - WheelPos * 3;
+		c.g=0;
+		c.b=WheelPos * 3;
+	} else {
+		WheelPos -= 170;
+		c.r=0;
+		c.g=WheelPos * 3;
+		c.b=255 - WheelPos * 3;
+	}
+
+	return c;
 }
 
 void cylon(color *data, int len, int center)
