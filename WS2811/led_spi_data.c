@@ -142,6 +142,8 @@ void setup_spi()
 	spi_enable(SPI1);
 }
 
+void cylon(color *data, int len, int center);
+
 int main(void)
 {
 	uint32_t i, j;
@@ -164,6 +166,8 @@ int main(void)
 		led_data[x].b = 0;
 	}
 
+	int center = 0;
+	int up = 1;
 	j = 0;
 	while (1) {
 		//gpio_toggle(GPIOD, GPIO12);	/* LED on/off */
@@ -180,22 +184,17 @@ int main(void)
 
 		// Make a cool effect plz!
 		//shiftdecay(led_data, scratch, N_LEDS);
-		int x = 0;
-		for(x=0; x < N_LEDS; x++)
-		{
-			led_data[x].r += 1;
-			if (led_data[x].r > 128) {
-				led_data[x].r = 0;
-			}
 
-			led_data[x].g += 1;
-			if (led_data[x].g > 128) {
-				led_data[x].g = 0;
+		cylon(led_data, N_LEDS, center);
+		if (up) {
+			center++;
+			if (center >= N_LEDS) {
+				up = 0;
 			}
-
-			led_data[x].b += 1;
-			if (led_data[x].b > 128) {
-				led_data[x].b = 0;
+		} else {
+			center--;
+			if (center < 0) {
+				up = 1;
 			}
 		}
 
@@ -203,7 +202,7 @@ int main(void)
 		update_string(led_data, N_LEDS);
 
 		// Delay
-		for (i = 0; i < 200000; i++) {	/* Wait a bit. */
+		for (i = 0; i < 400000; i++) {	/* Wait a bit. */
 			__asm__("nop");
 		}
 		j++;
@@ -211,6 +210,28 @@ int main(void)
 
 	return 0;
 
+}
+
+void cylon(color *data, int len, int center)
+{
+	int i;
+	for (i = 0; i < len; i++) {
+		if (i == center-2) {
+			data[i].r = 32;
+		} else if (i == center-1) {
+			data[i].r = 64;
+		} else if (i == center) {
+			data[i].r = 128;
+		} else if (i == center+1) {
+			data[i].r = 64;
+		} else if (i == center+2) {
+			data[i].r = 32;
+		} else {
+			data[i].r = 0;
+		}
+		data[i].g = 0;
+		data[i].b = 0;
+	}
 }
 
 void subfloor(color *data, uint8_t d, uint16_t len)
