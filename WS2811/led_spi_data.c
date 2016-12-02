@@ -27,12 +27,12 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define N_LEDS 16
+#define N_LEDS 50
 
 // Single pixel RGB data structure. Make an array out of this to store RGB data for a string.
 typedef struct {
-	uint8_t g;
 	uint8_t r;
+	uint8_t g;
 	uint8_t b;
 } color;
 
@@ -116,7 +116,7 @@ void setup_spi()
 			GPIO7 |
 			/* master slaveselect out */
 			GPIO4 );
-	gpio_set_output_options(GPIOA, GPIO_OTYPE_OD, GPIO_OSPEED_2MHZ, GPIO6);
+	//gpio_set_output_options(GPIOA, GPIO_OTYPE_OD, GPIO_OSPEED_2MHZ, GPIO6);
 	gpio_set_af(GPIOA, GPIO_AF5, GPIO5 | GPIO6 | GPIO7 | GPIO4);
 
 	spi_disable_crc(SPI1);
@@ -159,9 +159,9 @@ int main(void)
 	int x = 0;
 	for(x=0; x < N_LEDS; x++)
 	{
-		led_data[x].r = 128;
-		led_data[x].g = 128;
-		led_data[x].b = 128;
+		led_data[x].r = 0;
+		led_data[x].g = 0;
+		led_data[x].b = 0;
 	}
 
 	j = 0;
@@ -180,6 +180,24 @@ int main(void)
 
 		// Make a cool effect plz!
 		//shiftdecay(led_data, scratch, N_LEDS);
+		int x = 0;
+		for(x=0; x < N_LEDS; x++)
+		{
+			led_data[x].r += 1;
+			if (led_data[x].r > 128) {
+				led_data[x].r = 0;
+			}
+
+			led_data[x].g += 1;
+			if (led_data[x].g > 128) {
+				led_data[x].g = 0;
+			}
+
+			led_data[x].b += 1;
+			if (led_data[x].b > 128) {
+				led_data[x].b = 0;
+			}
+		}
 
 		// Send the new data to the LED string
 		update_string(led_data, N_LEDS);
@@ -263,8 +281,8 @@ void update_string(color *data, uint16_t len)
 			if (tmp & (0x01 << j))
 			{
 				// generate the sequence to represent a 'one' to the WS2811.
-				spi_send(SPI1, 0xFFF0);
-					     //0b1111 1111 1111 0000
+				spi_send(SPI1, 0xFF00);
+					     //0b1111 1111 0000 0000
 			}
 			else
 			{
