@@ -106,7 +106,7 @@ void setup_spi()
 	gpio_mode_setup(GPIOE, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO3);
 	/* set to special function select so the SPI module can control it  */
 	gpio_mode_setup(GPIOE, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO3);
-	
+
 	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE,
 			/* serial clock */
 			GPIO5 |
@@ -146,15 +146,15 @@ int main(void)
 	uint32_t i, j;
 	setup_main_clock();
 	gpio_setup();
-        setup_peripheral_clocks();
+	setup_peripheral_clocks();
 
 	setup_spi();
-	
+
 	color led_data[N_LEDS];
 	color scratch[N_LEDS];
-	
-	//union leds 
-	
+
+	//union leds
+
 	int x = 0;
 	for(x=0; x < N_LEDS; x++)
 	{
@@ -162,27 +162,27 @@ int main(void)
 		led_data[x].g = 0;
 		led_data[x].b = 0;
 	}
-	
+
 	j = 0;
 	while (1) {
 		//gpio_toggle(GPIOD, GPIO12);	/* LED on/off */
-		
+
 		// Blink the first LED green sometimes
 		if((j % 100) == 0) {
 			led_data[0].g = 255;
 			gpio_set(GPIOD, GPIO12);
-		}	
+		}
 		if((j % 100) == 2) {
 			led_data[0].g = 0;
 			gpio_clear(GPIOD, GPIO12);
-		}	
-		
+		}
+
 		// Make a cool effect plz!
 		shiftdecay(led_data, scratch, N_LEDS);
 		
 		// Send the new data to the LED string
 		update_string(led_data, N_LEDS);
-		
+
 		// Delay
 		for (i = 0; i < 200000; i++) {	/* Wait a bit. */
 			__asm__("nop");
@@ -202,24 +202,24 @@ void subfloor(color *data, uint8_t d, uint16_t len)
 	{
 		tmpr = data[i].r - data[i].r/6;
 		if(tmpr < 0) tmpr = 0;
-		
+
 		tmpg = data[i].g - data[i].g/6;
 		if(tmpg < 0) tmpg = 0;
-		
+
 		tmpb = data[i].b - data[i].b/6;
 		if(tmpb < 0) tmpb = 0;
-		
+
 		data[i].r = tmpr;
 		data[i].g = tmpg;
 		data[i].b = tmpb;
 	}
-	
+
 }
 
 void shiftdecay(color *data, color *buf, uint16_t len)
 {
 	uint16_t i = 0;
-	
+
 	// Shift & initial decay into buffer
 	for(i = 1; i < len; i++)
 	{
@@ -248,11 +248,11 @@ void shiftdecay(color *data, color *buf, uint16_t len)
 void update_string(color *data, uint16_t len)
 {
 	uint8_t *bytearray = (uint8_t *) data;
-	
+
 	uint16_t i = 0;
 	int16_t j = 0;
 	uint8_t tmp = 0;
-	
+
 	len = len * 3;
 	for(i=0; i < len; i++)
 	{
