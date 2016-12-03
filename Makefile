@@ -30,7 +30,7 @@ endif
 OPENCM3_DIR := $(realpath libopencm3)
 EXAMPLE_RULES = elf
 
-all: build
+all: bin
 
 bin: EXAMPLE_RULES += bin
 hex: EXAMPLE_RULES += hex
@@ -44,7 +44,7 @@ srec: build
 list: build
 images: build
 
-build: lib examples
+build: lib WS2811
 
 lib:
 	$(Q)if [ ! "`ls -A libopencm3`" ] ; then \
@@ -63,8 +63,13 @@ WS2811: lib
 	@printf "  BUILD   $@\n";
 	$(Q)$(MAKE) --directory=$@ OPENCM3_DIR=$(OPENCM3_DIR) $(EXAMPLE_RULES)
 
+flash: WS2811
+	@printf "  FLASH   $^n";
+	$(Q)$(MAKE) --directory=WS2811 OPENCM3_DIR=$(OPENCM3_DIR) stlink-flash
+
 clean: $(EXAMPLE_DIRS:=.clean) styleclean
 	$(Q)$(MAKE) -C libopencm3 clean
+	$(Q)$(MAKE) -C WS2811 clean
 
 stylecheck: $(EXAMPLE_DIRS:=.stylecheck)
 styleclean: $(EXAMPLE_DIRS:=.styleclean)
@@ -84,5 +89,5 @@ styleclean: $(EXAMPLE_DIRS:=.styleclean)
 
 
 .PHONY: build lib examples $(EXAMPLE_DIRS) install clean stylecheck styleclean \
-        bin hex srec list images
+        bin hex srec list images flash
 
