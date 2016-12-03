@@ -18,7 +18,6 @@
 ##
 
 PREFIX		?= arm-none-eabi
-#PREFIX		?= arm-elf
 
 # Be silent per default, but 'make V=1' will show all compiler calls.
 ifneq ($(V),1)
@@ -28,15 +27,14 @@ MAKEFLAGS += --no-print-directory
 endif
 
 OPENCM3_DIR := $(realpath libopencm3)
-EXAMPLE_RULES = elf
 
 all: bin
 
-bin: EXAMPLE_RULES += bin
-hex: EXAMPLE_RULES += hex
-srec: EXAMPLE_RULES += srec
-list: EXAMPLE_RULES += list
-images: EXAMPLE_RULES += images
+bin: RULES += bin
+hex: RULES += hex
+srec: RULES += srec
+list: RULES += list
+images: RULES += images
 
 bin: build
 hex: build
@@ -61,19 +59,13 @@ lib:
 
 WS2811: lib
 	@printf "  BUILD   $@\n";
-	$(Q)$(MAKE) --directory=$@ OPENCM3_DIR=$(OPENCM3_DIR) $(EXAMPLE_RULES)
+	$(Q)$(MAKE) -C $@ OPENCM3_DIR=$(OPENCM3_DIR) $(RULES)
 
 flash: WS2811
 	@printf "  FLASH   $^n";
-	$(Q)$(MAKE) --directory=WS2811 OPENCM3_DIR=$(OPENCM3_DIR) stlink-flash
+	$(Q)$(MAKE) -C WS2811 OPENCM3_DIR=$(OPENCM3_DIR) stlink-flash
 
-clean: $(EXAMPLE_DIRS:=.clean) styleclean
-	$(Q)$(MAKE) -C libopencm3 clean
-	$(Q)$(MAKE) -C WS2811 clean
-
-stylecheck: $(EXAMPLE_DIRS:=.stylecheck)
-styleclean: $(EXAMPLE_DIRS:=.styleclean)
-
+clean: libopencm3.clean WS2811.clean
 
 %.clean:
 	$(Q)if [ -d $* ]; then \
@@ -81,13 +73,4 @@ styleclean: $(EXAMPLE_DIRS:=.styleclean)
 		$(MAKE) -C $* clean OPENCM3_DIR=$(OPENCM3_DIR) || exit $?; \
 	fi;
 
-%.styleclean:
-	$(Q)$(MAKE) -C $* styleclean OPENCM3_DIR=$(OPENCM3_DIR)
-
-%.stylecheck:
-	$(Q)$(MAKE) -C $* stylecheck OPENCM3_DIR=$(OPENCM3_DIR)
-
-
-.PHONY: build lib examples $(EXAMPLE_DIRS) install clean stylecheck styleclean \
-        bin hex srec list images flash
-
+.PHONY: build lib clean bin hex srec list images flash
