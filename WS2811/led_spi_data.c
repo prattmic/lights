@@ -44,20 +44,12 @@ void setup_main_clock(void);
 void update_string(color *data, uint16_t len);
 void shiftdecay(color *data, color *buf, uint16_t len);
 
-static void gpio_setup(void)
+static void setup_onboard_led(void)
 {
 	/* Enable GPIOD clock. */
-	/* Manually: */
-	// RCC_AHB1ENR |= RCC_AHB1ENR_IOPDEN;
-	/* Using API functions: */
 	rcc_periph_clock_enable(RCC_GPIOD);
-	rcc_periph_clock_enable(RCC_GPIOA);
 
 	/* Set GPIO12 (in GPIO port D) to 'output push-pull'. */
-	/* Manually: */
-	// GPIOD_CRH = (GPIO_CNF_OUTPUT_PUSHPULL << (((8 - 8) * 4) + 2));
-	// GPIOD_CRH |= (GPIO_MODE_OUTPUT_2_MHZ << ((8 - 8) * 4));
-	/* Using API functions: */
 	gpio_mode_setup(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
 }
 
@@ -81,31 +73,11 @@ void setup_main_clock()
 	rcc_clock_setup_hse_3v3(&myclock);
 }
 
-void setup_peripheral_clocks()
-{
-	rcc_peripheral_enable_clock(&RCC_AHB1ENR,
-				    /* GPIO A */
-				    RCC_AHB1ENR_IOPAEN |
-				    /* GPIO D */
-				    RCC_AHB1ENR_IOPDEN |
-				    /* GPIO E */
-				    RCC_AHB1ENR_IOPEEN);
-
-	rcc_peripheral_enable_clock(&RCC_AHB2ENR,
-				    /* USB OTG */
-				    RCC_AHB2ENR_OTGFSEN);
-
-	rcc_peripheral_enable_clock(&RCC_APB2ENR,
-				    /* SPI 1 */
-				    RCC_APB2ENR_SPI1EN);
-}
-
 void setup_spi()
 {
-	/* chip select */
-	gpio_mode_setup(GPIOE, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO3);
-	/* set to special function select so the SPI module can control it  */
-	gpio_mode_setup(GPIOE, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO3);
+    /* We are using GPIOA pins. */
+	rcc_periph_clock_enable(RCC_GPIOA);
+	rcc_periph_clock_enable(RCC_SPI1);
 
 	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE,
 			/* serial clock */
@@ -116,7 +88,6 @@ void setup_spi()
 			GPIO7 |
 			/* master slaveselect out */
 			GPIO4 );
-	//gpio_set_output_options(GPIOA, GPIO_OTYPE_OD, GPIO_OSPEED_2MHZ, GPIO6);
 	gpio_set_af(GPIOA, GPIO_AF5, GPIO5 | GPIO6 | GPIO7 | GPIO4);
 
 	spi_disable_crc(SPI1);
@@ -148,10 +119,9 @@ void rainbowCycle(color *data, int len, int j);
 int main(void)
 {
 	uint32_t i, j;
-	setup_main_clock();
-	gpio_setup();
-	setup_peripheral_clocks();
 
+	setup_main_clock();
+	setup_onboard_led();
 	setup_spi();
 
 	color led_data[N_LEDS];
