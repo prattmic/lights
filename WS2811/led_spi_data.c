@@ -55,7 +55,7 @@ static void setup_onboard_led(void)
 
 void setup_main_clock()
 {
-	const clock_scale_t myclock = { /* 102MHz for my LED Serial Data Stuff */
+	const clock_scale_t clock = { /* 102MHz for my LED Serial Data Stuff */
 		.pllm = 8,
 		.plln = 408,
 		.pllp = 4,
@@ -66,11 +66,11 @@ void setup_main_clock()
 		.power_save = 0,
 		.flash_config = FLASH_ACR_ICE | FLASH_ACR_DCE |
 			FLASH_ACR_LATENCY_3WS,
-		.apb1_frequency = 12000000,
-		.apb2_frequency = 24000000,
+		.apb1_frequency = 25500000,
+		.apb2_frequency = 51000000,
 	};
 	// Set the System Clock to 102MHz!!
-	rcc_clock_setup_hse_3v3(&myclock);
+	rcc_clock_setup_hse_3v3(&clock);
 }
 
 void setup_spi()
