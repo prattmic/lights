@@ -79,18 +79,22 @@ void setup_spi()
 	rcc_periph_clock_enable(RCC_GPIOA);
 	rcc_periph_clock_enable(RCC_SPI1);
 
-	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE,
-			/* serial clock */
-			GPIO5 |
-			/* master in/slave out */
-			GPIO6 |
-			/* master out/slave in */
-			GPIO7 |
-			/* master slaveselect out */
-			GPIO4 );
-	gpio_set_af(GPIOA, GPIO_AF5, GPIO5 | GPIO6 | GPIO7 | GPIO4);
+	/*
+	 * SPI1 uses the following pins:
+	 *
+	 * PA5: serial clock
+	 * PA6: master in/slave out
+	 * PA7: master out/slave in
+	 * PA4: master slaveselect out
+	 *
+	 * We only enable PA7, because all we care about is the output.
+	 */
+
+	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO7);
+	gpio_set_af(GPIOA, GPIO_AF5, GPIO7);
 
 	spi_disable_crc(SPI1);
+
 	// Set the divider to 16 so that we get 6.4MHz for our LED communication!!
 	spi_init_master(SPI1, SPI_CR1_BAUDRATE_FPCLK_DIV_4,
 			/* high or low for the peripheral device */
@@ -101,14 +105,6 @@ void setup_spi()
 			SPI_CR1_DFF_16BIT,
 			/* Most or Least Sig Bit First */
 			SPI_CR1_MSBFIRST);
-	// Master Mode Only!
-	spi_disable_software_slave_management(SPI1);
-	spi_enable_ss_output(SPI1);
-
-	//spi_enable_software_slave_management(SPI1);
-	spi_set_nss_high(SPI1);
-
-	//spi_clear_mode_fault(SPI1);
 
 	spi_enable(SPI1);
 }
