@@ -62,7 +62,7 @@ WS2811: lib
 	$(Q)$(MAKE) -C $@ OPENCM3_DIR=$(OPENCM3_DIR) $(RULES)
 
 flash: WS2811
-	@printf "  FLASH   $^n";
+	@printf "  FLASH   $^\n";
 	$(Q)$(MAKE) -C WS2811 OPENCM3_DIR=$(OPENCM3_DIR) stlink-flash
 
 clean: libopencm3.clean WS2811.clean
