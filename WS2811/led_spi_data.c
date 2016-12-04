@@ -24,6 +24,7 @@
 #include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/pwr.h>
 #include <libopencm3/stm32/flash.h>
+#include <libopencm3/stm32/timer.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -61,13 +62,13 @@ void setup_main_clock()
 		.pllp = 4,
 		.pllq = 2,
 		.hpre = RCC_CFGR_HPRE_DIV_NONE,
-		.ppre1 = RCC_CFGR_PPRE_DIV_2,
+		.ppre1 = RCC_CFGR_PPRE_DIV_4,
 		.ppre2 = RCC_CFGR_PPRE_DIV_4,
 		.power_save = 0,
 		.flash_config = FLASH_ACR_ICE | FLASH_ACR_DCE |
 			FLASH_ACR_LATENCY_3WS,
 		.apb1_frequency = 25500000,
-		.apb2_frequency = 51000000,
+		.apb2_frequency = 25500000,
 	};
 	// Set the System Clock to 102MHz!!
 	rcc_clock_setup_hse_3v3(&clock);
@@ -109,6 +110,34 @@ void setup_spi()
 	spi_enable(SPI1);
 }
 
+void setup_timer()
+{
+	rcc_periph_clock_enable(RCC_TIM2);
+
+	timer_reset(TIM2);
+
+	/*
+	 * Timer global mode:
+	 * - No divider
+	 * - Alignment edge
+	 * - Direction up
+	 */
+	timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT, TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
+
+	/*
+	 * Run timer at 1kHz.
+	 *
+	 * TIM2's base clock is APB1 * 2.
+	 */
+	uint32_t prescaler = ((2*rcc_apb1_frequency) / 1000);
+	timer_set_prescaler(TIM2, prescaler);
+
+	/* Force an update to load the prescaler */
+	timer_generate_event(TIM2, TIM_EGR_UG);
+
+	timer_enable_counter(TIM2);
+}
+
 void cylon(color *data, int len, int center);
 void rainbowCycle(color *data, int len, int j);
 
@@ -119,6 +148,7 @@ int main(void)
 	setup_main_clock();
 	setup_onboard_led();
 	setup_spi();
+	setup_timer();
 
 	color led_data[N_LEDS];
 	color scratch[N_LEDS];
@@ -136,8 +166,9 @@ int main(void)
 	int center = 0;
 	int up = 1;
 	j = 0;
+
 	while (1) {
-		//gpio_toggle(GPIOD, GPIO12);	/* LED on/off */
+		uint32_t time = timer_get_counter(TIM2);
 
 		// Blink the first LED green sometimes
 		if((j % 100) == 0) {
@@ -170,9 +201,7 @@ int main(void)
 		update_string(led_data, N_LEDS);
 
 		// Delay
-		for (i = 0; i < 400000; i++) {	/* Wait a bit. */
-			__asm__("nop");
-		}
+		while (timer_get_counter(TIM2) <= (time+100));
 		j++;
 	}
 
