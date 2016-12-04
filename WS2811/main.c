@@ -32,21 +32,9 @@
 
 #define N_LEDS 50
 
-void setup_peripheral_clocks(void);
-void setup_main_clock(void);
-
 void shiftdecay(color *data, color *buf, uint16_t len);
 
-static void setup_onboard_led(void)
-{
-	/* Enable GPIOD clock. */
-	rcc_periph_clock_enable(RCC_GPIOD);
-
-	/* Set GPIO12 (in GPIO port D) to 'output push-pull'. */
-	gpio_mode_setup(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
-}
-
-void setup_main_clock()
+static void setup_main_clock()
 {
 	const clock_scale_t clock = { /* 102MHz for my LED Serial Data Stuff */
 		.pllm = 8,
@@ -66,7 +54,16 @@ void setup_main_clock()
 	rcc_clock_setup_hse_3v3(&clock);
 }
 
-void setup_timer()
+static void setup_onboard_led(void)
+{
+	/* Enable GPIOD clock. */
+	rcc_periph_clock_enable(RCC_GPIOD);
+
+	/* Set GPIO12 (in GPIO port D) to 'output push-pull'. */
+	gpio_mode_setup(GPIOD, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
+}
+
+static void setup_timer(void)
 {
 	rcc_periph_clock_enable(RCC_TIM2);
 
@@ -103,8 +100,8 @@ int main(void)
 
 	setup_main_clock();
 	setup_onboard_led();
-	setup_spi();
 	setup_timer();
+	setup_spi();
 
 	color led_data[N_LEDS];
 	color scratch[N_LEDS];
