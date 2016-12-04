@@ -28,13 +28,12 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "decay.h"
 #include "led_string.h"
 
 #define N_LEDS 50
 
-void shiftdecay(color *data, color *buf, uint16_t len);
-
-static void setup_main_clock()
+static void setup_main_clock(void)
 {
 	const clock_scale_t clock = { /* 102MHz for my LED Serial Data Stuff */
 		.pllm = 8,
@@ -96,25 +95,14 @@ void rainbowCycle(color *data, int len, int j);
 
 int main(void)
 {
-	uint32_t i, j;
+	uint32_t j;
 
 	setup_main_clock();
 	setup_onboard_led();
 	setup_timer();
 	setup_spi();
 
-	color led_data[N_LEDS];
-	color scratch[N_LEDS];
-
-	//union leds
-
-	int x = 0;
-	for(x=0; x < N_LEDS; x++)
-	{
-		led_data[x].r = 0;
-		led_data[x].g = 0;
-		led_data[x].b = 0;
-	}
+	color led_data[N_LEDS] = {0};
 
 	int center = 0;
 	int up = 1;
@@ -134,21 +122,21 @@ int main(void)
 		}
 
 		// Make a cool effect plz!
-		//shiftdecay(led_data, scratch, N_LEDS);
+		decay(led_data, N_LEDS);
 
 		//rainbowCycle(led_data, N_LEDS, j);
-		cylon(led_data, N_LEDS, center);
-		if (up) {
-			center++;
-			if (center >= N_LEDS) {
-				up = 0;
-			}
-		} else {
-			center--;
-			if (center < 0) {
-				up = 1;
-			}
-		}
+		//cylon(led_data, N_LEDS, center);
+		//if (up) {
+		//	center++;
+		//	if (center >= N_LEDS) {
+		//		up = 0;
+		//	}
+		//} else {
+		//	center--;
+		//	if (center < 0) {
+		//		up = 1;
+		//	}
+		//}
 
 		// Send the new data to the LED string
 		update_string(led_data, N_LEDS);
@@ -213,53 +201,4 @@ void cylon(color *data, int len, int center)
 		data[i].g = 0;
 		data[i].b = 0;
 	}
-}
-
-void subfloor(color *data, uint8_t d, uint16_t len)
-{
-	uint16_t i = 0;
-	int16_t tmpr, tmpg, tmpb;
-	for(i=0; i < len; i++)
-	{
-		tmpr = data[i].r - data[i].r/6;
-		if(tmpr < 0) tmpr = 0;
-
-		tmpg = data[i].g - data[i].g/6;
-		if(tmpg < 0) tmpg = 0;
-
-		tmpb = data[i].b - data[i].b/6;
-		if(tmpb < 0) tmpb = 0;
-
-		data[i].r = tmpr;
-		data[i].g = tmpg;
-		data[i].b = tmpb;
-	}
-
-}
-
-void shiftdecay(color *data, color *buf, uint16_t len)
-{
-	uint16_t i = 0;
-
-	// Shift & initial decay into buffer
-	for(i = 1; i < len; i++)
-	{
-		buf[i].r = data[i-1].r;
-		buf[i].g = data[i-1].g;
-		buf[i].b = data[i-1].b;
-	}
-
-	// Add buf back in
-	for(i = 1; i < len; i++)
-	{
-		data[i].r = buf[i].r;
-		data[i].g = buf[i].g;
-		data[i].b = buf[i].b;
-	}
-	data[0].r = data[len-1].r;
-	data[0].g = data[len-1].g;
-	data[0].b = data[len-1].b;
-
-	// Decay (without underflowing)
-	subfloor(data, 5, N_LEDS);
 }
