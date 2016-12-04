@@ -94,39 +94,31 @@ static void setup_timer(void)
 
 int main(void)
 {
-	uint32_t j;
-
 	setup_main_clock();
 	setup_onboard_led();
 	setup_timer();
 	setup_spi();
 
 	color led_data[NUM_LEDS] = {0};
-
-	j = 0;
-
-	while (1) {
+    for (int i = 0; ; i++) {
 		uint32_t time = timer_get_counter(TIM2);
 
-		// Blink the first LED green sometimes
-		if((j % 100) == 0) {
-			led_data[0].g = 255;
+		/* Blink the green LED once per second. */
+		if((i % 10) == 0) {
 			gpio_set(GPIOD, GPIO12);
 		}
-		if((j % 100) == 2) {
-			led_data[0].g = 0;
+		if((i % 10) == 2) {
 			gpio_clear(GPIOD, GPIO12);
 		}
 
 		/* Step the effect */
 		cylon(led_data, NUM_LEDS);
 
-		// Send the new data to the LED string
+		/* Send the new data to the LED string. */
 		update_string(led_data, NUM_LEDS);
 
-		// Delay
+		/* Delay */
 		while (timer_get_counter(TIM2) <= (time+100));
-		j++;
 	}
 
 	return 0;
