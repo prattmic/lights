@@ -4,7 +4,7 @@
 
 #include "led_string.h"
 
-static void subfloor(color *data, uint16_t len)
+static void subfloor(struct color *data, uint16_t len)
 {
 	for (uint16_t i = 0; i < len; i++) {
 		int16_t tmpr = data[i].r - data[i].r/6;
@@ -29,9 +29,9 @@ static void subfloor(color *data, uint16_t len)
 
 }
 
-void decay(color *data, uint16_t len)
+void decay(struct color *data, uint16_t len)
 {
-	color scratch[len];
+	struct color scratch[len];
 
 	// Shift & initial decay into buffer
 	for(uint64_t i = 1; i < len; i++) {

@@ -43,7 +43,7 @@ void setup_spi(void)
 
 /* turn bits into pulses of the correct ratios for the WS2811 by making *
  * bytes with the correct number of ones & zeros in the right order.    */
-void update_string(color *data, uint16_t len)
+void update_string(struct color *data, uint16_t len)
 {
 	uint8_t *bytearray = (uint8_t *) data;
 

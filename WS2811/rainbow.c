@@ -4,8 +4,8 @@
 
 #include "led_string.h"
 
-static color color_wheel(int pos) {
-	color c;
+static struct color color_wheel(int pos) {
+	struct color c;
 
 	if (pos < 85) {
 		c.r = pos * 3;
@@ -26,7 +26,7 @@ static color color_wheel(int pos) {
 	return c;
 }
 
-void rainbow(color *data, uint16_t len) {
+void rainbow(struct color *data, uint16_t len) {
 	static int curr = 0;
 	curr++;
 

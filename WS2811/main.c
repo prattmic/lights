@@ -99,7 +99,7 @@ int main(void)
 	setup_timer();
 	setup_spi();
 
-	color led_data[NUM_LEDS] = {0};
+	struct color led_data[NUM_LEDS] = {0};
     for (int i = 0; ; i++) {
 		uint32_t time = timer_get_counter(TIM2);
 

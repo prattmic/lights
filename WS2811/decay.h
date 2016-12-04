@@ -5,6 +5,6 @@
 
 #include "led_string.h"
 
-void decay(color *data, uint16_t len);
+void decay(struct color *data, uint16_t len);
 
 #endif /* WS2811_DECAY_H_ */

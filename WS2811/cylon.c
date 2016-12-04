@@ -5,7 +5,7 @@
 
 #include "led_string.h"
 
-void cylon(color *data, uint16_t len)
+void cylon(struct color *data, uint16_t len)
 {
 	static int center = 0;
 	static bool up = true;

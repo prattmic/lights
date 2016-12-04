@@ -5,6 +5,6 @@
 
 #include "led_string.h"
 
-void rainbow(color *data, uint16_t len);
+void rainbow(struct color *data, uint16_t len);
 
 #endif /* WS2811_RAINBOW_H_ */

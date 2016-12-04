@@ -5,6 +5,6 @@
 
 #include "led_string.h"
 
-void cylon(color *data, uint16_t len);
+void cylon(struct color *data, uint16_t len);
 
 #endif /* WS2811_CYLON_H_ */
