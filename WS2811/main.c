@@ -117,20 +117,21 @@ int main(void)
 	struct color led_data[NUM_LEDS] = {0};
 	effect_func effect = random_effect();
 
+	/* The loop runs every 10ms. */
 	for (int i = 0; ; i++) {
 		uint32_t time = timer_get_counter(TIM2);
 
 		/* New effect every 10s */
-		if ((i % 100) == 0) {
+		if ((i % 1000) == 0) {
 			memset(led_data, 0, sizeof(led_data));
 			effect = random_effect();
 		}
 
 		/* Blink the green LED once per second. */
-		if((i % 10) == 0) {
+		if((i % 100) == 0) {
 			gpio_set(GPIOD, GPIO12);
 		}
-		if((i % 10) == 2) {
+		if((i % 100) == 2) {
 			gpio_clear(GPIOD, GPIO12);
 		}
 
@@ -141,7 +142,7 @@ int main(void)
 		update_string(led_data, NUM_LEDS);
 
 		/* Delay */
-		while (timer_get_counter(TIM2) <= (time+100));
+		while (timer_get_counter(TIM2) <= (time+10));
 	}
 
 	return 0;

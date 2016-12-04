@@ -7,25 +7,31 @@
 
 void cylon(struct color *data, uint16_t len)
 {
+	static int i = 0;
 	static int center = 0;
 	static bool up = true;
 
-	for (int i = 0; i < len; i++) {
-		if (i == center-2) {
-			data[i].r = 32;
-		} else if (i == center-1) {
-			data[i].r = 64;
-		} else if (i == center) {
-			data[i].r = 128;
-		} else if (i == center+1) {
-			data[i].r = 64;
-		} else if (i == center+2) {
-			data[i].r = 32;
+	/* Update at half speed */
+	if (i++ % 2) {
+		return;
+	}
+
+	for (int j = 0; j < len; j++) {
+		if (j == center-2) {
+			data[j].r = 32;
+		} else if (j == center-1) {
+			data[j].r = 64;
+		} else if (j == center) {
+			data[j].r = 128;
+		} else if (j == center+1) {
+			data[j].r = 64;
+		} else if (j == center+2) {
+			data[j].r = 32;
 		} else {
-			data[i].r = 0;
+			data[j].r = 0;
 		}
-		data[i].g = 0;
-		data[i].b = 0;
+		data[j].g = 0;
+		data[j].b = 0;
 	}
 
 	/* Update center */
