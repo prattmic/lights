@@ -122,9 +122,8 @@ int main(void)
 		}
 
 		// Make a cool effect plz!
-		decay(led_data, N_LEDS);
+		rainbow(led_data, N_LEDS);
 
-		//rainbowCycle(led_data, N_LEDS, j);
 		//cylon(led_data, N_LEDS, center);
 		//if (up) {
 		//	center++;
@@ -147,38 +146,6 @@ int main(void)
 	}
 
 	return 0;
-}
-
-color Wheel(int WheelPos);
-
-void rainbowCycle(color *data, int len, int j) {
-	int i;
-	for(i=0; i< len; i++) {
-		color c=Wheel(((i * 256 / len) + j) & 255);
-		data[i] = c;
-	}
-}
-
-color Wheel(int WheelPos) {
-	static color c;
-
-	if(WheelPos < 85) {
-		c.r=WheelPos * 3;
-		c.g=255 - WheelPos * 3;
-		c.b=0;
-	} else if(WheelPos < 170) {
-		WheelPos -= 85;
-		c.r=255 - WheelPos * 3;
-		c.g=0;
-		c.b=WheelPos * 3;
-	} else {
-		WheelPos -= 170;
-		c.r=0;
-		c.g=WheelPos * 3;
-		c.b=255 - WheelPos * 3;
-	}
-
-	return c;
 }
 
 void cylon(color *data, int len, int center)

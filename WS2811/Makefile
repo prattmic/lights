@@ -20,7 +20,7 @@
 BINARY = main
 
 # Extra files beyond BINARY.o.
-OBJS = decay.o led_string.o
+OBJS = decay.o led_string.o rainbow.o
 
 LDSCRIPT = stm32f4-discovery.ld
 
