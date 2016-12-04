@@ -35,5 +35,3 @@ void rainbow(struct color *data, uint16_t len) {
 		data[i] = color_wheel(pos);
 	}
 }
-
-
