@@ -152,18 +152,19 @@ int main(void)
 		// Make a cool effect plz!
 		//shiftdecay(led_data, scratch, N_LEDS);
 
-		rainbowCycle(led_data, N_LEDS, j);
-		//if (up) {
-		//	center++;
-		//	if (center >= N_LEDS) {
-		//		up = 0;
-		//	}
-		//} else {
-		//	center--;
-		//	if (center < 0) {
-		//		up = 1;
-		//	}
-		//}
+		//rainbowCycle(led_data, N_LEDS, j);
+		cylon(led_data, N_LEDS, center);
+		if (up) {
+			center++;
+			if (center >= N_LEDS) {
+				up = 0;
+			}
+		} else {
+			center--;
+			if (center < 0) {
+				up = 1;
+			}
+		}
 
 		// Send the new data to the LED string
 		update_string(led_data, N_LEDS);
