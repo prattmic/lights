@@ -102,6 +102,7 @@ static const effect_func effects[] = {
 	/* decay, */
 	rainbow,
 	theater_chase,
+	christmas_chase,
 };
 
 static effect_func random_effect(void) {
