@@ -19,6 +19,9 @@
 
 BINARY = led_spi_data
 
+# Extra files beyond BINARY.o.
+OBJS = led_string.o
+
 LDSCRIPT = stm32f4-discovery.ld
 
 include Makefile.include
