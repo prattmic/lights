@@ -28,10 +28,12 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "cylon.h"
 #include "decay.h"
 #include "led_string.h"
+#include "rainbow.h"
 
-#define N_LEDS 50
+#define NUM_LEDS 50
 
 static void setup_main_clock(void)
 {
@@ -90,9 +92,6 @@ static void setup_timer(void)
 	timer_enable_counter(TIM2);
 }
 
-void cylon(color *data, int len, int center);
-void rainbowCycle(color *data, int len, int j);
-
 int main(void)
 {
 	uint32_t j;
@@ -102,10 +101,8 @@ int main(void)
 	setup_timer();
 	setup_spi();
 
-	color led_data[N_LEDS] = {0};
+	color led_data[NUM_LEDS] = {0};
 
-	int center = 0;
-	int up = 1;
 	j = 0;
 
 	while (1) {
@@ -121,24 +118,11 @@ int main(void)
 			gpio_clear(GPIOD, GPIO12);
 		}
 
-		// Make a cool effect plz!
-		rainbow(led_data, N_LEDS);
-
-		//cylon(led_data, N_LEDS, center);
-		//if (up) {
-		//	center++;
-		//	if (center >= N_LEDS) {
-		//		up = 0;
-		//	}
-		//} else {
-		//	center--;
-		//	if (center < 0) {
-		//		up = 1;
-		//	}
-		//}
+		/* Step the effect */
+		cylon(led_data, NUM_LEDS);
 
 		// Send the new data to the LED string
-		update_string(led_data, N_LEDS);
+		update_string(led_data, NUM_LEDS);
 
 		// Delay
 		while (timer_get_counter(TIM2) <= (time+100));
@@ -146,26 +130,4 @@ int main(void)
 	}
 
 	return 0;
-}
-
-void cylon(color *data, int len, int center)
-{
-	int i;
-	for (i = 0; i < len; i++) {
-		if (i == center-2) {
-			data[i].r = 32;
-		} else if (i == center-1) {
-			data[i].r = 64;
-		} else if (i == center) {
-			data[i].r = 128;
-		} else if (i == center+1) {
-			data[i].r = 64;
-		} else if (i == center+2) {
-			data[i].r = 32;
-		} else {
-			data[i].r = 0;
-		}
-		data[i].g = 0;
-		data[i].b = 0;
-	}
 }
