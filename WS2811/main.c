@@ -18,6 +18,9 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <libopencm3/cm3/assert.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
@@ -25,8 +28,6 @@
 #include <libopencm3/stm32/pwr.h>
 #include <libopencm3/stm32/flash.h>
 #include <libopencm3/stm32/timer.h>
-#include <stdlib.h>
-#include <math.h>
 
 #include "cylon.h"
 #include "decay.h"
@@ -92,6 +93,20 @@ static void setup_timer(void)
 	timer_enable_counter(TIM2);
 }
 
+typedef void (*effect_func)(struct color *, uint16_t);
+
+static const effect_func effects[] = {
+	cylon,
+	/* Does nothing if it starts with all zeroes */
+	/* decay, */
+	rainbow,
+};
+
+static effect_func random_effect(void) {
+	int i = rand() % sizeof(effects)/sizeof(effects[0]);
+	return effects[i];
+}
+
 int main(void)
 {
 	setup_main_clock();
@@ -100,8 +115,16 @@ int main(void)
 	setup_spi();
 
 	struct color led_data[NUM_LEDS] = {0};
-    for (int i = 0; ; i++) {
+	effect_func effect = random_effect();
+
+	for (int i = 0; ; i++) {
 		uint32_t time = timer_get_counter(TIM2);
+
+		/* New effect every 10s */
+		if ((i % 100) == 0) {
+			memset(led_data, 0, sizeof(led_data));
+			effect = random_effect();
+		}
 
 		/* Blink the green LED once per second. */
 		if((i % 10) == 0) {
@@ -112,7 +135,7 @@ int main(void)
 		}
 
 		/* Step the effect */
-		cylon(led_data, NUM_LEDS);
+		effect(led_data, NUM_LEDS);
 
 		/* Send the new data to the LED string. */
 		update_string(led_data, NUM_LEDS);
