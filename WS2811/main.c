@@ -33,6 +33,7 @@
 #include "decay.h"
 #include "led_string.h"
 #include "rainbow.h"
+#include "theater_chase.h"
 
 #define NUM_LEDS 50
 
@@ -100,6 +101,7 @@ static const effect_func effects[] = {
 	/* Does nothing if it starts with all zeroes */
 	/* decay, */
 	rainbow,
+	theater_chase,
 };
 
 static effect_func random_effect(void) {
