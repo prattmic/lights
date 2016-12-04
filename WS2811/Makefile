@@ -17,7 +17,7 @@
 ## along with this library.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-BINARY = led_spi_data
+BINARY = main
 
 # Extra files beyond BINARY.o.
 OBJS = led_string.o
