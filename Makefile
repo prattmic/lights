@@ -42,7 +42,7 @@ srec: build
 list: build
 images: build
 
-build: lib WS2811
+build: lib lights
 
 lib:
 	$(Q)if [ ! "`ls -A libopencm3`" ] ; then \
@@ -57,15 +57,15 @@ lib:
 		fi
 	$(Q)$(MAKE) -C libopencm3
 
-WS2811: lib
+lights: lib
 	@printf "  BUILD   $@\n";
 	$(Q)$(MAKE) -C $@ OPENCM3_DIR=$(OPENCM3_DIR) $(RULES)
 
-flash: WS2811
+flash: lights
 	@printf "  FLASH   $^\n";
-	$(Q)$(MAKE) -C WS2811 OPENCM3_DIR=$(OPENCM3_DIR) stlink-flash
+	$(Q)$(MAKE) -C lights OPENCM3_DIR=$(OPENCM3_DIR) stlink-flash
 
-clean: libopencm3.clean WS2811.clean
+clean: libopencm3.clean lights.clean
 
 %.clean:
 	$(Q)if [ -d $* ]; then \
