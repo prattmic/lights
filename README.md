@@ -1,4 +1,4 @@
-# STM32F4_WS2811
+# STM32F4 powered Christmas lights
 
 About
 ----
