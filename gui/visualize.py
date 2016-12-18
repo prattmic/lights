@@ -4,7 +4,7 @@ import sys
 
 pygame.init()
 
-size = width, height = 500, 10
+size = width, height = 1000, 50
 black = 0, 0, 0
 
 screen = pygame.display.set_mode(size)
@@ -19,7 +19,7 @@ def redraw(leds):
 
     for i, led in enumerate(leds):
         led = tuple([int(c) for c in led])
-        pygame.draw.rect(screen, led, (10*i, 0, 10, 10))
+        pygame.draw.rect(screen, led, (20*i, 0, 20, 50))
 
 for line in fileinput.input():
     for event in pygame.event.get():

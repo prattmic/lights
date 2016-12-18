@@ -19,10 +19,14 @@
 
 BINARY = main
 
+EFFECTS = cylon.c decay.c rainbow.c theater_chase.c
+
 # Extra files beyond BINARY.o.
-OBJS = cylon.o decay.o led_string.o rainbow.o theater_chase.o
+OBJS = led_string.o $(EFFECTS:.c=.o)
 
 LDSCRIPT = stm32f4-discovery.ld
 
 include Makefile.include
 
+simulator: simulator.c $(EFFECTS)
+	cc -Wall -Werror -o $@ $^
