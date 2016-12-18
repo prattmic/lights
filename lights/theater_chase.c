@@ -39,7 +39,6 @@ void christmas_chase(struct color *data, uint16_t len)
 		return;
 	}
 
-	/* Turn every third LED on, rotating the starting LED. */
 	for (int i = 0; i < len; i++) {
 		data[i].r = 0;
 		data[i].g = 0;
@@ -49,7 +48,7 @@ void christmas_chase(struct color *data, uint16_t len)
 			data[i].g = 128;
 		}
 
-		if (i%5 == (update%5 + 2)) {
+		if (i%5 == (update%5 + 2)%5) {
 			data[i].r = 128;
 		}
 	}
