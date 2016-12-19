@@ -24,9 +24,11 @@ EFFECTS = cylon.c decay.c lightning.c rainbow.c theater_chase.c
 # Extra files beyond BINARY.o.
 OBJS = led_string.o $(EFFECTS:.c=.o)
 
+LDLIBS += -lm
+
 LDSCRIPT = stm32f4-discovery.ld
 
 include Makefile.include
 
 simulator: simulator.c $(EFFECTS)
-	cc -Wall -Werror -o $@ $^
+	cc -Wall -Werror -o $@ $^ -lm

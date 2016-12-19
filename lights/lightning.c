@@ -1,10 +1,22 @@
 #include "lightning.h"
 
+#include <math.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 
 #include "led_string.h"
+
+/*
+ * Random number with exponential distribution.
+ *
+ * https://github.com/numpy/numpy/blob/master/numpy/random/mtrand/distributions.c#L115
+ */
+static float exponential_rand(void)
+{
+	float r = (rand() % 100) / 100.0f;
+	return -log(1 - r);
+}
 
 /*
  * Write the gradient of src to dst.
@@ -27,9 +39,12 @@ static void gradient(uint8_t *src, int16_t *dst, uint16_t len)
 void lightning(struct color *data, uint16_t len)
 {
 	static int call = 0;
+	static int next_strike = 0;
 
 	/* Only update every 100ms */
-	if (call++ % 10) {
+	if (call == 0) {
+		call++;
+	} else if (++call % 10) {
 		return;
 	}
 
@@ -39,8 +54,9 @@ void lightning(struct color *data, uint16_t len)
 		brightness[i] = data[i].r;
 	}
 
-	if ((rand() % 10) == 0) {
+	if (call >= next_strike) {
 		brightness[rand() % len] = 255;
+		next_strike = call + 50*exponential_rand();
 	}
 
 	int16_t grad[len];
