@@ -19,7 +19,7 @@
 
 BINARY = main
 
-EFFECTS = cylon.c decay.c lightning.c rainbow.c theater_chase.c
+EFFECTS = cylon.c decay.c effects.c lightning.c rainbow.c theater_chase.c
 
 # Extra files beyond BINARY.o.
 OBJS = led_string.o $(EFFECTS:.c=.o)

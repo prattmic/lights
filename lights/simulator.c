@@ -3,31 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "cylon.h"
-#include "decay.h"
+#include "effects.h"
 #include "led_string.h"
-#include "lightning.h"
-#include "rainbow.h"
-#include "theater_chase.h"
 
 #define NUM_LEDS 50
-
-typedef void (*effect_func)(uint32_t, struct color *, uint16_t);
-
-static const effect_func effects[] = {
-	cylon,
-	/* Does nothing if it starts with all zeroes */
-	/* decay, */
-	rainbow,
-	theater_chase,
-	christmas_chase,
-	lightning,
-};
-
-static effect_func random_effect(void) {
-	int i = rand() % sizeof(effects)/sizeof(effects[0]);
-	return effects[i];
-}
 
 void print_leds(struct color *data, size_t num) {
 	for (int i = 0; i < num; i++) {

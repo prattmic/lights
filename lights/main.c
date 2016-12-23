@@ -29,12 +29,8 @@
 #include <libopencm3/stm32/flash.h>
 #include <libopencm3/stm32/timer.h>
 
-#include "cylon.h"
-#include "decay.h"
+#include "effects.h"
 #include "led_string.h"
-#include "lightning.h"
-#include "rainbow.h"
-#include "theater_chase.h"
 
 #define NUM_LEDS 50
 
@@ -93,23 +89,6 @@ static void setup_timer(void)
 	timer_generate_event(TIM2, TIM_EGR_UG);
 
 	timer_enable_counter(TIM2);
-}
-
-typedef void (*effect_func)(uint32_t, struct color *, uint16_t);
-
-static const effect_func effects[] = {
-	cylon,
-	/* Does nothing if it starts with all zeroes */
-	/* decay, */
-	rainbow,
-	theater_chase,
-	christmas_chase,
-	lightning,
-};
-
-static effect_func random_effect(void) {
-	int i = rand() % sizeof(effects)/sizeof(effects[0]);
-	return effects[i];
 }
 
 int main(void)
