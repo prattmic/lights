@@ -2,9 +2,39 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
+#include "color_wheel.h"
 #include "led_string.h"
+
+static struct color random_color(void) {
+	return color_wheel(rand() % 256);
+}
+
+static struct color fade(struct color c, int i) {
+	struct color faded;
+
+	if (10*i < c.r) {
+		faded.r = c.r - 10*i;
+	} else {
+		faded.r = 0;
+	}
+
+	if (10*i < c.g) {
+		faded.g = c.g - 10*i;
+	} else {
+		faded.g = 0;
+	}
+
+	if (10*i < c.b) {
+		faded.b = c.b - 10*i;
+	} else {
+		faded.b = 0;
+	}
+
+	return faded;
+}
 
 void snake(uint32_t call, struct color *data, uint16_t len)
 {
@@ -21,14 +51,9 @@ void snake(uint32_t call, struct color *data, uint16_t len)
 	}
 
 	if (empty) {
+		struct color init = random_color();
 		for (int i = 0; i < len; i++) {
-			int val = 255 - 10*i;
-			if (val < 0) {
-				val = 0;
-			}
-			data[i].r = val;
-			data[i].g = 0;
-			data[i].b = val;
+			data[i] = fade(init, i);
 		}
 	}
 
