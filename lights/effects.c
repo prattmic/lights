@@ -4,6 +4,7 @@
 
 #include "cylon.h"
 #include "decay.h"
+#include "snake.h"
 #include "lightning.h"
 #include "rainbow.h"
 #include "theater_chase.h"
@@ -16,6 +17,7 @@ static const effect_func effects[] = {
 	theater_chase,
 	christmas_chase,
 	lightning,
+	snake,
 };
 
 effect_func random_effect(void) {
