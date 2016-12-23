@@ -5,13 +5,12 @@
 
 #include "led_string.h"
 
-void theater_chase(struct color *data, uint16_t len)
+void theater_chase(uint32_t call, struct color *data, uint16_t len)
 {
-	static int call = 0;
 	static int update = 0;
 
 	/* Only update every 100ms */
-	if (call++ % 10) {
+	if (call % 10) {
 		return;
 	}
 
@@ -29,13 +28,12 @@ void theater_chase(struct color *data, uint16_t len)
 	update++;
 }
 
-void christmas_chase(struct color *data, uint16_t len)
+void christmas_chase(uint32_t call, struct color *data, uint16_t len)
 {
-	static int call = 0;
 	static int update = 0;
 
 	/* Only update every 100ms */
-	if (call++ % 10) {
+	if (call % 10) {
 		return;
 	}
 

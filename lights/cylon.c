@@ -5,14 +5,13 @@
 
 #include "led_string.h"
 
-void cylon(struct color *data, uint16_t len)
+void cylon(uint32_t call, struct color *data, uint16_t len)
 {
-	static int i = 0;
 	static int center = 0;
 	static bool up = true;
 
 	/* Update at half speed */
-	if (i++ % 2) {
+	if (call % 2) {
 		return;
 	}
 

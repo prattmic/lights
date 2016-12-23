@@ -95,7 +95,7 @@ static void setup_timer(void)
 	timer_enable_counter(TIM2);
 }
 
-typedef void (*effect_func)(struct color *, uint16_t);
+typedef void (*effect_func)(uint32_t, struct color *, uint16_t);
 
 static const effect_func effects[] = {
 	cylon,
@@ -123,7 +123,7 @@ int main(void)
 	effect_func effect = random_effect();
 
 	/* The loop runs every 10ms. */
-	for (int i = 0; ; i++) {
+	for (uint32_t i = 0; ; i++) {
 		uint32_t time = timer_get_counter(TIM2);
 
 		/* New effect every 10s */
@@ -141,7 +141,7 @@ int main(void)
 		}
 
 		/* Step the effect */
-		effect(led_data, NUM_LEDS);
+		effect(i, led_data, NUM_LEDS);
 
 		/* Send the new data to the LED string. */
 		update_string(led_data, NUM_LEDS);

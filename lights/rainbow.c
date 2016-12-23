@@ -26,12 +26,9 @@ static struct color color_wheel(int pos) {
 	return c;
 }
 
-void rainbow(struct color *data, uint16_t len) {
-	static int curr = 0;
-	curr++;
-
+void rainbow(uint32_t call, struct color *data, uint16_t len) {
 	for (int i = 0; i< len; i++) {
-		int pos = ((i * 256 / len) + curr) & 255;
+		int pos = ((i * 256 / len) + call) & 255;
 		data[i] = color_wheel(pos);
 	}
 }

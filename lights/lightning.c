@@ -36,15 +36,12 @@ static void gradient(uint8_t *src, int16_t *dst, uint16_t len)
 	}
 }
 
-void lightning(struct color *data, uint16_t len)
+void lightning(uint32_t call, struct color *data, uint16_t len)
 {
-	static int call = 0;
-	static int next_strike = 0;
+	static uint32_t next_strike = 0;
 
 	/* Only update every 100ms */
-	if (call == 0) {
-		call++;
-	} else if (++call % 10) {
+	if (call % 10) {
 		return;
 	}
 

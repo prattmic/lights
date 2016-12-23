@@ -5,6 +5,6 @@
 
 #include "led_string.h"
 
-void lightning(struct color *data, uint16_t len);
+void lightning(uint32_t call, struct color *data, uint16_t len);
 
 #endif /* WS2811_LIGHTNING_H_ */

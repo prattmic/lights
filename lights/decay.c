@@ -29,7 +29,7 @@ static void subfloor(struct color *data, uint16_t len)
 
 }
 
-void decay(struct color *data, uint16_t len)
+void decay(uint32_t call __attribute__((unused)), struct color *data, uint16_t len)
 {
 	struct color scratch[len];
 

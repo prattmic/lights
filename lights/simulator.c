@@ -12,7 +12,7 @@
 
 #define NUM_LEDS 50
 
-typedef void (*effect_func)(struct color *, uint16_t);
+typedef void (*effect_func)(uint32_t, struct color *, uint16_t);
 
 static const effect_func effects[] = {
 	cylon,
@@ -44,7 +44,7 @@ int main(void) {
 	struct color led_data[NUM_LEDS] = {0};
 	effect_func effect = random_effect();
 
-	for (int i = 0; ; i++) {
+	for (uint32_t i = 0; ; i++) {
 		/* New effect every 10s */
 		if ((i % 1000) == 0) {
 			memset(led_data, 0, sizeof(led_data));
@@ -52,7 +52,7 @@ int main(void) {
 		}
 
 		/* Step the effect */
-		effect(led_data, NUM_LEDS);
+		effect(i, led_data, NUM_LEDS);
 
 		/* Print the step */
 		print_leds(led_data, NUM_LEDS);
