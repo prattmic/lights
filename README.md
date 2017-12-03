@@ -11,6 +11,9 @@ The `update_string` function outputs data to the WS2811 string by transmitting
 different numbers of sequential ones in order to generate the duty cycles that
 the WS2811 expects for a 'one' vs 'zero' bit.
 
+This project is intended to run on the STM32F4(07) Discovery board. The SPI
+output is on PA7.
+
 ## Clock System Setup
 
 8MHz Xtal \-\-> Div/8 \-\-> PLL x 408 \-\-> Div/4 \-\-> SYSCLK \-\-> PPRE1/2
